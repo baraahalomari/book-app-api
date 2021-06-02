@@ -12,9 +12,9 @@ require('dotenv').config();
 const app = express();
 
 app.use(express.json());
-const PORT = process.env.PORT;
-app.use(cors());
 
+app.use(cors());
+const PORT = process.env.PORT;
 app.get('/', (req, res) => {
     res.send('Hello');
 })
@@ -77,7 +77,7 @@ function bookCollection() {
     book3.save();
 }
 
-// // bookCollection();
+bookCollection();
 
 function userCollection() {
     const user1 = new user({
@@ -123,11 +123,11 @@ function userCollection() {
         ]
     })
 
-    // user1.save();
-    // user2.save();
+    user1.save();
+    user2.save();
 }
 
-// // userCollection();
+userCollection();
 
 
 
