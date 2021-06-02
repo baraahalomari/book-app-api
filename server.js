@@ -10,10 +10,10 @@ require('dotenv').config();
 // const mongoose = require('mongoose');
 
 const app = express();
-app.use(cors());
+
 app.use(express.json());
 const PORT = process.env.PORT;
-
+app.use(cors());
 
 app.get('/', (req, res) => {
     res.send('Hello');
@@ -25,9 +25,13 @@ app.get('/', (req, res) => {
 app.get('/book', getBooksHandler);
 app.post('/addBook', addBookHandler);
 app.delete('/deleteBook/:index', deleteBookHandler);
+app.put('/updateBook/:index',updateBookHandler);
+
+
+
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost:27017/book', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(`${process.env.MONGODB_URI}`, { useNewUrlParser: true, useUnifiedTopology: true });
 
 
 const bookSchema = new mongoose.Schema({
@@ -185,6 +189,24 @@ function deleteBookHandler(req, res) {
     })
 }
 
+function updateBookHandler(req,res){
+    console.log(req.body);
+    console.log(req.params.index);
+    const { name, description, img, status ,email } =req.body;
+    const index = Number(req.params.index);
+    user.findOne({ email: email },(error,ownerData)=>{
+        console.log(ownerData);
+        ownerData.books.splice(index,1,{
+            name: name,
+                description: description,
+                img: img,
+                status: status
+        })
+        ownerData.save();
+        console.log(ownerData)
+        res.send(ownerData.books)
+    })
+}
 
 app.listen(PORT, () => {
     console.log(`Listening on PORT ${PORT}`)
